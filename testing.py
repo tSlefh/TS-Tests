@@ -2,7 +2,9 @@
 
 letterlist = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 question = ["Which Answer is <20?",["17","8","20","25"],2] #filler until csv - question, answer list, how many answers, (correct(s) are first x)
-
+import sys
+import getopt
+import csv
 
 def testQ(q):
 	print q[0]
@@ -33,8 +35,25 @@ def  checkA(q,a):
 
 	
 		
-print letterlist[1]
-print question[1][0]
-checkA(question,testQ(question))
+#print letterlist[1]
+#print question[1][0]
+#checkA(question,testQ(question))
+
+
+def main(argv):
+	try:
+		opts, args = getopt.getopt(argv,"h")
+		print opts
+		if not opts:
+			print "Please call a single test file."
+			sys.exit(2)
+	except getopt.GetoptError:
+		print "Please call a single test file."
+		sys.exit(2)
+	
+if __name__ == "__main__":
+	main(sys.argv[1:])
+	
+
 		
 #import questions from csv (https://docs.python.org/2/library/csv.html ) one q per row?, multiple answer possibilities, etc.

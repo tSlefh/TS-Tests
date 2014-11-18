@@ -7,6 +7,7 @@ exams they are studying for.
 
 Version History:
 0.1: Initial update, trivial implementation of one question
+0.2: CSV support! Randomized answer order! Options! Refactored somewhat.
 
 
 Planned Features:

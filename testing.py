@@ -126,6 +126,7 @@ def main(argv):
 		
 	with open(args[0], 'rb') as csvfile:
 		test = csv.reader(csvfile, dialect='excel')
+		#testlist = list(test)   ---   can end with here, since iterable is exhausted (check if can access variable), then can shuffle this
 		for row in test:
 			#print row
 			q = Question(row,flags['rand'])

@@ -153,6 +153,7 @@ def main(argv):
 		
 	with open(args[0], 'rb') as csvfile:
 		test = csv.reader(csvfile, dialect='excel')
+
 		if flags['hist']:
 			histfile = makehist()
 		#testlist = list(test)   ---   can end with here, since iterable is exhausted (check if can access variable), then can shuffle this
@@ -167,6 +168,29 @@ def main(argv):
 			else:
 				incorrectList.append(q)
 		print "Number Correct: {}/{}".format(correctQ,totalQ)
+'''
+		testlist = list(test)   #   can end with here, since iterable is exhausted (check if can access variable), then can shuffle this
+		
+		for x in xrange(len(testlist)):
+			a = "-Q{}".format(str(x+1))
+			#print testlist[x][0]
+			testlist[x][0] = testlist[x][0]+a
+			
+		random.shuffle(testlist)
+			
+				
+	for x in testlist:
+		#print row
+		q = Question(x,flags['rand'])
+		totalQ += 1
+		print "Question {}".format(totalQ)
+		if checkA(q,testQ(q),flags['train']):
+			correctQ += 1
+			correctList.append(q)
+		else:
+			incorrectList.append(q)
+	print "Number Correct: {}/{}".format(correctQ,totalQ)
+'''
 			
 	
 if __name__ == "__main__":

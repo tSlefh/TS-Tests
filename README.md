@@ -8,6 +8,7 @@ exams they are studying for.
 Version History:
 0.1: Initial update, trivial implementation of one question
 0.2: CSV support! Randomized answer order! Options! Refactored somewhat.
+0.3.1: Training mode and text file history added! Option list: -h/--help, -t/--training, --norandom, --nohistory
 
 
 Planned Features:

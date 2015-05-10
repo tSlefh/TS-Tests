@@ -55,13 +55,16 @@ def testQ(q):
 		i += 1
 	return answers
 	
-def  checkA(q,a,train):
+def  checkA(q,a,train,hist,histfile=None):
 	#correct = q[1]
 	#correctans = q[1][:correct]   ---wtf?
 	#ec = int(q.anum)+2
 	#correctans = q.alist[:int(q.anum)]
 	#print correctans, sorted(correctans)
 	#print a, sorted(a)
+	if hist:
+		loghist(q,a,histfile)
+	
 	if not train:
 		if sorted(a) == sorted(q.corrlist):
 			#print "Right!"
@@ -76,24 +79,46 @@ def  checkA(q,a,train):
 		else:
 			if len(q.corrlist) == 1:
 				print "Sorry, the correct answer was {}.".format(q.corrlist[0])
+				m = raw_input("Press enter to continue")
 			else:
 				print "Sorry, the correct answers were:"
 				for x in q.corrlist:
 					print x
+				m = raw_input("Press enter to continue")
 			return False
 
+def makehist():
+	import time
+	import os
+	today = time.strftime("%Y%m%d")
+	time = time.strftime("%H%M")
+	app = 1
+	histfile = None
+	while not histfile:
+		if not os.path.exists("{0}-{1}_{2}.txt".format(today,time,str(app))):
+			histfile = "{0}-{1}_{2}.txt".format(today,time,str(app))
+		else:
+			app += 1
+	return histfile
+			
+def loghist(q,a,histfile):
+	with open(histfile,"a") as h:
+		h.write("Question         : {0}\n".format(q.ask))
+		h.write("Correct Answer(s): {0}\n".format(q.corrlist))
+		h.write("Your Answer(s)   : {0}\n".format(a))
+		h.write("\n\n")
 	
-		
 #print letterlist[1]
 #print question[1][0]
 #checkA(question,testQ(question))
 
 def usage():
-	print "This testing software accepts a csv file of questions and answers. Please enter the command as:"
-	print "testing.py [-ht] [--help] [--training] [--nonrandom] filename.csv"
-	print "-h, --help : Display these messages."
-	print "-t, --training : Training mode: Correct answers will be shown after incorrect attempts."
-	print "--nonrandom : Do not randomize answer order"
+	print "This testing software accepts a csv file of questions and answers. Please enter the command as:\n"
+	print "testing.py [-ht] [--help] [--training] [--nonrandom] filename.csv\n"
+	print "-h, --help      : Display these messages."
+	print "-t, --training  : Training mode: Correct answers will be shown after incorrect attempts."
+	print "    --nonrandom : Do not randomize answer order"
+	print "    --nohistory : Do not save a history of this test"
 	print "\n"
 
 
@@ -102,12 +127,12 @@ def main(argv):
 	correctQ = 0
 	correctList = []
 	incorrectList = []
-	flags = {'train':False,'rand':True}
+	flags = {'train':False,'rand':True,'hist':True}
 	
 	
 	try:
 		#print argv
-		opts, args = getopt.getopt(argv,"ht",["help","training","nonrandom"])
+		opts, args = getopt.getopt(argv,"ht",["help","training","nonrandom","nohistory"])
 		#print opts, args
 		for opt, arg in opts:
 			if opt in ("-h","--help"):
@@ -117,6 +142,8 @@ def main(argv):
 				flags['train'] = True
 			if opt in ("--nonrandom"):
 				flags['rand'] = False
+			if opt in ("--nohistory"):
+				flags['hist'] = False
 		if len(args) != 1:
 			print "Please call a single test file."
 			sys.exit(2)
@@ -126,13 +153,15 @@ def main(argv):
 		
 	with open(args[0], 'rb') as csvfile:
 		test = csv.reader(csvfile, dialect='excel')
+		if flags['hist']:
+			histfile = makehist()
 		#testlist = list(test)   ---   can end with here, since iterable is exhausted (check if can access variable), then can shuffle this
 		for row in test:
 			#print row
 			q = Question(row,flags['rand'])
 			totalQ += 1
 			print "Question {}".format(totalQ)
-			if checkA(q,testQ(q),flags['train']):
+			if checkA(q,testQ(q),flags['train'],flags['hist'],histfile):
 				correctQ += 1
 				correctList.append(q)
 			else:
